@@ -1,11 +1,11 @@
-name: create_pr
+name: create_release
 
 on:
   pull_request:
     branches: [ qa, master ]
 
 jobs:
-  send-notification:
+  create_release:
 
     runs-on: ubuntu-latest
 
