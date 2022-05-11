@@ -25,8 +25,8 @@ jobs:
           echo "Variable (github.event.label.name): ${{ github.event.label.name }}"
           echo "Variable (steps.PR.outputs.pr_url): ${{ steps.PR.outputs.pr_url }}"
           echo "Variable (github.event.pull_request.draft): ${{ github.event.pull_request.draft }}"
-          echo 'Print All variables'
-          echo env
+          echo 'Print variables'
+          echo "$GITHUB_CONTEXT"
 
       - name: Invoke chat hook
         uses: joelwmale/webhook-action@master
