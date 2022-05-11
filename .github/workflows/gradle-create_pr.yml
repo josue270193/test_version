@@ -13,7 +13,9 @@ jobs:
       name: develop
 
     steps:
-      - uses: 8BitJonny/gh-get-current-pr@master
+      - uses: actions/checkout@v3
+
+      - uses: 8BitJonny/gh-get-current-pr@2.0.0
         name: Get current pull request
         id: PR
         with:
@@ -31,9 +33,17 @@ jobs:
           echo "Variable (steps.PR.outputs.pr_labels): ${{ steps.PR.outputs.pr_labels }}"
           echo "Variable (github.event.pull_request.draft): ${{ github.event.pull_request.draft }}"
 
-      - name: Invoke chat hook
+      - name: Invoke chat hook 1
         uses: joelwmale/webhook-action@master
-        if: success() && steps.PR.outputs.pr_url && github.event.pull_request.draft == false
+        with:
+          url: ${{ secrets.WEBHOOK_CHAT_URL }}
+          body: '{"text": "${{ github.actor }}"}'
+
+
+
+      - name: Invoke chat hook 2
+        uses: joelwmale/webhook-action@master
+        if: steps.PR.outputs.pr_url && github.event.pull_request.draft == false
         with:
           url: ${{ secrets.WEBHOOK_CHAT_URL }}
           body: '{"text": "[${{ steps.PR.outputs.pr_labels }}] PR (${{ steps.PR.outputs.pr_title }}) ${{ steps.PR.outputs.pr_url }} por ${{ github.actor }}"}'
