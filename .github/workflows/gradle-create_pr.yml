@@ -15,12 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Get commit SHA
+        id: sha
+        shell: bash
+        run: |
+          echo ::set-output name=commit::$(git rev-list --no-merges -n 1 HEAD)
+
       - uses: 8BitJonny/gh-get-current-pr@2.0.0
         name: Get current pull request
         id: PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ github.event.pull_request.head.sha }}
+          sha: ${{ steps.sha.outputs.commit }}
 
       - name: Print variables
         run: |
@@ -38,8 +44,6 @@ jobs:
         with:
           url: ${{ secrets.WEBHOOK_CHAT_URL }}
           body: '{"text": "${{ github.actor }}"}'
-
-
 
       - name: Invoke chat hook 2
         uses: joelwmale/webhook-action@master
