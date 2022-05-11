@@ -24,20 +24,11 @@ jobs:
 
       - name: Print variables
         run: |
-          echo "Variable (github.event.pull_request.head.sha): ${{ github.event.pull_request.head.sha }}"
           echo "Variable (github.event.label): ${{ github.event.label }}"
           echo "Variable (github.event.label.name): ${{ github.event.label.name }}"
-          echo "Variable (steps.PR): ${{ toJSON(steps.PR) }}"
-          echo "Variable (steps.PR.outputs): ${{ toJSON(steps.PR.outputs) }}"
           echo "Variable (steps.PR.outputs.pr_url): ${{ steps.PR.outputs.pr_url }}"
           echo "Variable (steps.PR.outputs.pr_labels): ${{ steps.PR.outputs.pr_labels }}"
           echo "Variable (github.event.pull_request.draft): ${{ github.event.pull_request.draft }}"
-
-      - name: Invoke chat hook 1
-        uses: joelwmale/webhook-action@master
-        with:
-          url: ${{ secrets.WEBHOOK_CHAT_URL }}
-          body: '{"text": "${{ github.actor }}"}'
 
       - name: Invoke chat hook 2
         uses: joelwmale/webhook-action@master
