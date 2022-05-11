@@ -18,7 +18,7 @@ jobs:
       - name: Release
         id: release
         run: |
-          git fetch --tags --unshallow
+          git fetch --tags --depth=10000
 
           ./gradlew release \
            -Prelease.customUsername=${{ github.actor }} \
