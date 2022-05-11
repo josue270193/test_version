@@ -13,9 +13,7 @@ jobs:
       name: develop
 
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: 8BitJonny/gh-get-current-pr@2.0.0
+      - uses: 8BitJonny/gh-get-current-pr@1.4.0
         id: PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
