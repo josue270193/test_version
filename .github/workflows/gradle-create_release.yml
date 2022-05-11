@@ -1,0 +1,23 @@
+name: create_pr
+
+on:
+  pull_request:
+    branches: [ qa, master ]
+
+jobs:
+  send-notification:
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: develop
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Release
+        id: release
+        run: |
+          ./gradlew release \
+           -Prelease.customUsername=${{ github.actor }} \
+           -Prelease.customPassword=${{ github.token }}
