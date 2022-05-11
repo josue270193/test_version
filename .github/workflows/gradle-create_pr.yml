@@ -13,12 +13,12 @@ jobs:
       name: develop
 
     steps:
-      - uses: 8BitJonny/gh-get-current-pr@2.0.0
+      - uses: 8BitJonny/gh-get-current-pr@master
+        name: Get current pull request (if present)
         id: PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sha: ${{ github.event.pull_request.head.sha }}
-          filterOutClosed: true
 
       - name: Print variables
         run: |
