@@ -29,6 +29,12 @@ jobs:
           echo "Variable (steps.PR.outputs.pr_labels): ${{ steps.PR.outputs.pr_labels }}"
           echo "Variable (github.event.pull_request.draft): ${{ github.event.pull_request.draft }}"
 
+      - name: Print variables no sucess
+        run: |
+          echo "No sucess"
+          echo "Variable (steps.PR): ${{ toJSON(steps.PR) }}"
+        if: !success()
+
       - name: Invoke chat hook
         uses: joelwmale/webhook-action@master
         if: success() && steps.PR.outputs.pr_url && github.event.pull_request.draft == false
