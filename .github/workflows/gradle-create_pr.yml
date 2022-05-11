@@ -15,18 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get commit SHA
-        id: sha
-        shell: bash
-        run: |
-          echo ::set-output name=commit::$(git rev-list --no-merges -n 1 HEAD)
-
       - uses: 8BitJonny/gh-get-current-pr@1.4.0
         name: Get current pull request
         id: PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ steps.sha.outputs.commit }}
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Print variables
         run: |
