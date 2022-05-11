@@ -1,0 +1,36 @@
+name: create_pr
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  send-notification:
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: develop
+
+    steps:
+      - uses: 8BitJonny/gh-get-current-pr@1.4.0
+        id: PR
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ github.event.pull_request.head.sha }}
+          filterOutClosed: true
+
+      - name: Print variables
+        run: |
+          echo "Variable (github.event.label.name): ${{ github.event.label.name }}"
+          echo "Variable (steps.PR.outputs.pr_url): ${{ steps.PR.outputs.pr_url }}"
+          echo "Variable (github.event.pull_request.draft): ${{ github.event.pull_request.draft }}"
+          echo 'Print All variables'
+          echo env
+
+      - name: Invoke chat hook
+        uses: joelwmale/webhook-action@master
+        if: success() && steps.PR.outputs.pr_url && github.event.pull_request.draft == false && github.event.label.name == 'notification'
+        with:
+          url: ${{ secrets.WEBHOOK_CHAT_URL }}
+          body: '{"text": "[${{ steps.PR.outputs.pr_labels }}] PR (${{ steps.PR.outputs.pr_title }}) ${{ steps.PR.outputs.pr_url }} por ${{ github.actor }}"}'

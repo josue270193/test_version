@@ -1,0 +1,20 @@
+plugins {
+    id 'pl.allegro.tech.build.axion-release' version '1.13.6'
+}
+
+group = 'com.test'
+version = scmVersion.version
+
+repositories {
+    mavenLocal()
+    def usernameProperty = project.findProperty("nexusUserName") ?: System.getenv("NEXUS_USER_NAME")
+    def passwordProperty = project.findProperty("nexusPassword") ?: System.getenv("NEXUS_PASSWORD")
+    maven {
+        url = project.findProperty("nexusMavenRepo") ?: System.getenv("NEXUS_MAVEN_REPO")
+        credentials {
+            username = usernameProperty
+            password = passwordProperty
+        }
+    }
+    mavenCentral()
+}
