@@ -20,6 +20,17 @@ jobs:
           sha: ${{ github.event.pull_request.head.sha }}
           filterOutClosed: true
 
+      - name: Print variables
+        run: |
+          echo "Variable (success()): ${{ success() }}"
+          echo "Variable (github.event): ${{ github.event }}"
+          echo "Variable (github.event.label): ${{ github.event.label }}"
+          echo "Variable (github.event.label.name): ${{ github.event.label.name }}"
+          echo "Variable (steps.PR.outputs): ${{ steps.PR.outputs }}"
+          echo "Variable (steps.PR.outputs.pr_url): ${{ steps.PR.outputs.pr_url }}"
+          echo "Variable (steps.PR.outputs.pr_labels): ${{ steps.PR.outputs.pr_labels }}"
+          echo "Variable (github.event.pull_request.draft): ${{ github.event.pull_request.draft }}"
+
       - name: Invoke chat hook
         uses: joelwmale/webhook-action@master
         if: success() && steps.PR.outputs.pr_url && github.event.pull_request.draft == false
@@ -27,12 +38,4 @@ jobs:
           url: ${{ secrets.WEBHOOK_CHAT_URL }}
           body: '{"text": "[${{ steps.PR.outputs.pr_labels }}] PR (${{ steps.PR.outputs.pr_title }}) ${{ steps.PR.outputs.pr_url }} por ${{ github.actor }}"}'
 
-      - name: Print variables
-        run: |
-          echo "Variable (github.event): ${{ github.event }}"
-          echo "Variable (github.event.label): ${{ github.event.label }}"
-          echo "Variable (github.event.label.name): ${{ github.event.label.name }}"
-          echo "Variable (steps.PR.outputs.pr_url): ${{ steps.PR.outputs.pr_url }}"
-          echo "Variable (steps.PR.outputs.pr_labels): ${{ steps.PR.outputs.pr_labels }}"
-          echo "Variable (github.event.pull_request.draft): ${{ github.event.pull_request.draft }}"
 
