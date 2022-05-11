@@ -38,6 +38,18 @@ jobs:
           url: ${{ secrets.WEBHOOK_CHAT_URL }}
           body: '{"text": "[${{ steps.PR.outputs.pr_labels }}] PR (${{ steps.PR.outputs.pr_title }}) ${{ steps.PR.outputs.pr_url }} por ${{ github.actor }}"}'
 
+  release:
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3 # https://github.com/actions/checkout
+        with:
+          fetch-depth: '0' # https://github.com/shipkit/shipkit-changelog#fetch-depth-on-ci
+
+      - name: Publish githubRelease
+        run: ./gradlew githubRelease
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
 
