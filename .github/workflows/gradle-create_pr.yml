@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: 8BitJonny/gh-get-current-pr@master
+      - uses: 8BitJonny/gh-get-current-pr@2.0.0
         id: PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
