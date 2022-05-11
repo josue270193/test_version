@@ -2,7 +2,7 @@ name: create_pr
 
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [ develop, qa, master ]
 
 jobs:
   send-notification:
