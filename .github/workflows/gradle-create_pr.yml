@@ -22,7 +22,6 @@ jobs:
 
       - name: Print variables
         run: |
-          echo "Variable (success()): ${{ success() }}"
           echo "Variable (github.event): ${{ github.event }}"
           echo "Variable (github.event.label): ${{ github.event.label }}"
           echo "Variable (github.event.label.name): ${{ github.event.label.name }}"
