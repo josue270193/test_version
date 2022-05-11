@@ -15,39 +15,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get commit SHA
-        id: sha
-        shell: bash
-        run: |
-          echo ::set-output name=commit::$(git rev-list --no-merges -n 1 HEAD)
-
-      - uses: 8BitJonny/gh-get-current-pr@2.0.0
+      - uses: 8BitJonny/gh-get-current-pr@1.4.0
         name: Get current pull request
         id: PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ steps.sha.outputs.commit }}
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Print variables
         run: |
-          echo "Variable (github.event.pull_request.head.sha): ${{ github.event.pull_request.head.sha }}"
           echo "Variable (github.event.label): ${{ github.event.label }}"
           echo "Variable (github.event.label.name): ${{ github.event.label.name }}"
-          echo "Variable (steps.PR): ${{ toJSON(steps.PR) }}"
-          echo "Variable (steps.PR.outputs): ${{ toJSON(steps.PR.outputs) }}"
           echo "Variable (steps.PR.outputs.pr_url): ${{ steps.PR.outputs.pr_url }}"
           echo "Variable (steps.PR.outputs.pr_labels): ${{ steps.PR.outputs.pr_labels }}"
           echo "Variable (github.event.pull_request.draft): ${{ github.event.pull_request.draft }}"
 
-      - name: Invoke chat hook 1
-        uses: joelwmale/webhook-action@master
-        with:
-          url: ${{ secrets.WEBHOOK_CHAT_URL }}
-          body: '{"text": "${{ github.actor }}"}'
-
       - name: Invoke chat hook 2
         uses: joelwmale/webhook-action@master
-        if: steps.PR.outputs.pr_url && github.event.pull_request.draft == false
+        if: steps.PR.outputs.pr_url && github.event.pull_request.draft == false && contains(${{ steps.PR.outputs.pr_labels }}, 'notification')
         with:
           url: ${{ secrets.WEBHOOK_CHAT_URL }}
           body: '{"text": "[${{ steps.PR.outputs.pr_labels }}] PR (${{ steps.PR.outputs.pr_title }}) ${{ steps.PR.outputs.pr_url }} por ${{ github.actor }}"}'
