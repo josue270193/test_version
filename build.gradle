@@ -1,20 +1,66 @@
-plugins {
-    id 'pl.allegro.tech.build.axion-release' version '1.13.6'
+buildscript {
+    repositories {
+        mavenLocal()
+        def usernameProperty = project.findProperty("nexusUserName") ?: System.getenv("NEXUS_USER_NAME")
+        def passwordProperty = project.findProperty("nexusPassword") ?: System.getenv("NEXUS_PASSWORD")
+        maven {
+            url = project.findProperty("nexusMavenRepo") ?: System.getenv("NEXUS_MAVEN_REPO")
+            credentials {
+                username = usernameProperty
+                password = passwordProperty
+            }
+        }
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+
+    dependencies {
+        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
+        classpath 'org.shipkit:shipkit-changelog:1.1.15'
+        classpath 'org.shipkit:shipkit-auto-version:1.1.20'
+    }
 }
 
-group = 'com.test'
-version = scmVersion.version
+apply plugin: 'org.shipkit.shipkit-auto-version'
+apply plugin: 'org.shipkit.shipkit-changelog'
+apply plugin: 'org.shipkit.shipkit-github-release'
+println "Building version $version"
 
-repositories {
-    mavenLocal()
-    def usernameProperty = project.findProperty("nexusUserName") ?: System.getenv("NEXUS_USER_NAME")
-    def passwordProperty = project.findProperty("nexusPassword") ?: System.getenv("NEXUS_PASSWORD")
-    maven {
-        url = project.findProperty("nexusMavenRepo") ?: System.getenv("NEXUS_MAVEN_REPO")
-        credentials {
-            username = usernameProperty
-            password = passwordProperty
+group = 'com.test'
+
+tasks.named("generateChangelog") {
+    previousRevision = project.ext.'shipkit-auto-version.previous-tag'
+    githubToken = System.getenv('GITHUB_TOKEN')
+    repository = 'josue270193/test_version'
+}
+
+tasks.named("githubRelease") {
+    def genTask = tasks.named("generateChangelog").get()
+    dependsOn genTask
+    repository = genTask.repository
+    changelog = genTask.outputFile
+    newTagRevision = System.getenv("GITHUB_SHA")
+    githubToken = System.getenv("GITHUB_TOKEN")
+}
+
+def isSnapshot = version.endsWith("-SNAPSHOT")
+if (isSnapshot) {
+    tasks.named("githubRelease") {
+        //snapshot versions do not produce changelog / GitHub releases
+        enabled = false
+    }
+}
+
+tasks.register("releaseSummary") {
+    doLast {
+        if (isSnapshot) {
+            println "RELEASE SUMMARY\n" +
+                    "  SNAPSHOTS\n" +
+                    "  Release to Maven Central: SKIPPED FOR SNAPSHOTS\n" +
+                    "  Github releases: SKIPPED FOR SNAPSHOTS"
+        } else {
+            println "RELEASE SUMMARY\n" +
+                    "  Release to Maven Central (available in few hours): \n" +
+                    "  Github releases: https://github.com/josue270193/test_version/releases"
         }
     }
-    mavenCentral()
 }
