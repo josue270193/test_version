@@ -18,7 +18,6 @@ jobs:
         id: PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Print variables
         run: |
