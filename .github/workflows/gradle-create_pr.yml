@@ -14,13 +14,15 @@ jobs:
 
     steps:
       - uses: 8BitJonny/gh-get-current-pr@master
-        name: Get current pull request (if present)
+        name: Get current pull request
         id: PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Print variables
         run: |
+          echo "Variable (github.event.pull_request.head.sha): ${{ github.event.pull_request.head.sha }}"
           echo "Variable (github.event.label): ${{ github.event.label }}"
           echo "Variable (github.event.label.name): ${{ github.event.label.name }}"
           echo "Variable (steps.PR): ${{ toJSON(steps.PR) }}"
