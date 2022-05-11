@@ -1,9 +1,11 @@
+
 plugins {
-    id 'pl.allegro.tech.build.axion-release' version '1.13.6'
+    id 'org.shipkit.shipkit-auto-version' version "1.1.20"
+    id 'org.shipkit.shipkit-changelog' version "1.1.15"
+    id 'org.shipkit.shipkit-github-release' version "1.1.15"
 }
 
 group = 'com.test'
-version = scmVersion.version
 
 repositories {
     mavenLocal()
@@ -17,4 +19,19 @@ repositories {
         }
     }
     mavenCentral()
+}
+
+tasks.named("generateChangelog") {
+    previousRevision = project.ext.'shipkit-auto-version.previous-tag'
+    githubToken = System.getenv('GITHUB_TOKEN')
+    repository = 'josue270193/test_version'
+}
+
+tasks.named("githubRelease") {
+    def genTask = tasks.named("generateChangelog").get()
+    dependsOn genTask
+    repository = genTask.repository
+    changelog = genTask.outputFile
+    newTagRevision = System.getenv("GITHUB_SHA")
+    githubToken = System.getenv("GITHUB_TOKEN")
 }

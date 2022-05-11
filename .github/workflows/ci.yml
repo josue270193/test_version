@@ -1,12 +1,13 @@
-name: create_pr
+name: CI
 
 on:
+  push:
+    tags: [ v* ]
   pull_request:
     branches: [ develop, qa, master ]
 
 jobs:
   send-notification:
-
     runs-on: ubuntu-latest
 
     environment:
@@ -36,5 +37,7 @@ jobs:
         with:
           url: ${{ secrets.WEBHOOK_CHAT_URL }}
           body: '{"text": "[${{ steps.PR.outputs.pr_labels }}] PR (${{ steps.PR.outputs.pr_title }}) ${{ steps.PR.outputs.pr_url }} por ${{ github.actor }}"}'
+
+
 
 
