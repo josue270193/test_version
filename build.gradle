@@ -23,6 +23,7 @@ buildscript {
 apply plugin: 'org.shipkit.shipkit-auto-version'
 apply plugin: 'org.shipkit.shipkit-changelog'
 apply plugin: 'org.shipkit.shipkit-github-release'
+println "Building version $version"
 
 group = 'com.test'
 
