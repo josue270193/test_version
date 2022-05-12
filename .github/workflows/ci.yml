@@ -2,9 +2,10 @@ name: CI
 
 on:
   push:
+    branches: [ 'master' ]
     tags: [ v* ]
   pull_request:
-    branches: [ develop, qa, master ]
+    branches: [ '**' ]
 
 jobs:
   send-notification:
@@ -41,14 +42,19 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    if: github.event_name == 'push'
+      && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
+      && github.repository == 'josue270193/test_version'
+      && !contains(toJSON(github.event.commits.*.message), '[skip release]')
+
     steps:
       - name: Check out code
         uses: actions/checkout@v3 # https://github.com/actions/checkout
         with:
           fetch-depth: '0' # https://github.com/shipkit/shipkit-changelog#fetch-depth-on-ci
 
-      - name: Publish githubRelease
-        run: ./gradlew githubRelease
+      - name: Build and release
+        run: ./gradlew githubRelease releaseSummary
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 

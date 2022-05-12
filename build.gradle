@@ -40,3 +40,26 @@ tasks.named("githubRelease") {
     newTagRevision = System.getenv("GITHUB_SHA")
     githubToken = System.getenv("GITHUB_TOKEN")
 }
+
+def isSnapshot = version.endsWith("-SNAPSHOT")
+if (isSnapshot) {
+    tasks.named("githubRelease") {
+        //snapshot versions do not produce changelog / GitHub releases
+        enabled = false
+    }
+}
+
+tasks.register("releaseSummary") {
+    doLast {
+        if (isSnapshot) {
+            println "RELEASE SUMMARY\n" +
+                    "  SNAPSHOTS\n" +
+                    "  Release to Maven Central: SKIPPED FOR SNAPSHOTS\n" +
+                    "  Github releases: SKIPPED FOR SNAPSHOTS"
+        } else {
+            println "RELEASE SUMMARY\n" +
+                    "  Release to Maven Central (available in few hours): \n" +
+                    "  Github releases: https://github.com/josue270193/test_version/releases"
+        }
+    }
+}
