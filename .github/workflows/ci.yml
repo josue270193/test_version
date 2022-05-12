@@ -46,7 +46,7 @@ jobs:
           echo "Variable (github.event_namel): ${{ github.event_name }}"
           echo "Variable (github.ref): ${{ github.ref }}"
           echo "Variable (github.repository): ${{ github.repository }}"
-          echo "Variable (github.event.commits.*.message): ${{ github.event.commits.*.message }}"
+          echo "Variable (github.event.commits.*.message): ${{ toJSON(github.event.commits.*.message) }}"
 
   release:
     runs-on: ubuntu-latest
