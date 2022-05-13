@@ -1,3 +1,4 @@
 Archivo inicial
 
 linea 1.
+linea 2
