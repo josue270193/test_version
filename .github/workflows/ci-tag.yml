@@ -3,14 +3,9 @@ name: CI-Tag
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Define env name'
-        required: true
-        default: 'prod'
-      branch:
-        description: 'Define branch name'
-        required: true
-        default: 'master'
+      tag:
+        description: 'Define tag name'
+        required: false
 
 jobs:
   print-inputs:
@@ -20,6 +15,21 @@ jobs:
       name: develop
 
     steps:
-      - run: |
-          echo "Env: ${{ github.event.inputs.environment }}" 
-          echo "Branch: ${{ github.event.inputs.branch }}"
+
+      - name: Print inputs
+        run: |
+          echo "Tag: ${{ github.event.inputs.tag }}" 
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ github.event.inputs.tag }}
+
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
