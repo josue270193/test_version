@@ -32,7 +32,11 @@ jobs:
 
       - name: Invoke chat hook 2
         uses: joelwmale/webhook-action@master
-        if: success() && steps.PR.outputs.pr_url && github.event.pull_request.draft == false && contains(steps.PR.outputs.pr_labels, 'notification')
+        if: success() && steps.PR.outputs.pr_url
+        && github.event.pull_request.draft == false
+        && contains(steps.PR.outputs.pr_labels, 'notification')
+        && github.event_name == 'pull_request'
+
         with:
           url: ${{ secrets.WEBHOOK_CHAT_URL }}
           body: '{"text": "[${{ steps.PR.outputs.pr_labels }}] PR (${{ steps.PR.outputs.pr_title }}) ${{ steps.PR.outputs.pr_url }} por ${{ github.actor }}"}'
