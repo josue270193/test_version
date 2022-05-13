@@ -1,0 +1,56 @@
+name: CI-creation-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag-type:
+        type: choice
+        description: 'Tipo de Tag'
+        required: true
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  print-inputs:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: develop
+
+    steps:
+
+      - name: Print inputs
+        run: |
+          echo "tag-type: ${{ github.event.inputs.tag-type }}" 
+
+      - uses: actions/checkout@v3
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Execute Gradle calculate tag version
+        run: |
+          TAG_VERSION=$(./gradlew cV -Prelease.versionIncrementer=incrementMinor -q -Prelease.quiet)
+          echo "::set-output name=TAG_VERSION::TAG_VERSION"
+        id: calculate_tag_version
+
+      - name: Print calculate_tag_version
+        run: |
+          echo "calculate_tag_version: ${{ steps.calculate_tag_version.outputs.TAG_VERSION }}"
+  
+
+#      - name: Bump version and push tag
+#        id: tag_version
+#        uses: mathieudutour/github-tag-action@v6.0
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          custom_tag: ${{ github.event.inputs.tag }}
+#
+#      - name: Create a GitHub release
+#        uses: ncipollo/release-action@v1
+#        with:
+#          tag: ${{ steps.tag_version.outputs.new_tag }}
+#          name: Release ${{ steps.tag_version.outputs.new_tag }}
+#          body: ${{ steps.tag_version.outputs.changelog }}
