@@ -13,8 +13,12 @@ on:
         default: 'master'
 
 jobs:
-  printInputs:
+  print-inputs:
     runs-on: ubuntu-latest
+
+    environment:
+      name: develop
+
     steps:
       - run: |
           echo "Env: ${{ github.event.inputs.environment }}" 
