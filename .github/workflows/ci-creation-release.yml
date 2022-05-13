@@ -25,6 +25,22 @@ jobs:
         run: |
           echo "tag-type: ${{ github.event.inputs.tag-type }}" 
 
+      - uses: chris-madsen/variable-mapper@v0.1.3
+        with:
+          key: ${{ github.event.inputs.tag-type }}
+          map: |
+            {
+              "major": {
+                "tag_type_action": "incrementMajor"
+              },
+              "minor": {
+                "tag_type_action": "incrementMinor"
+              },
+              "patch": {
+                "tag_type_action": "incrementPatch"
+              }
+            }
+
       - name: Check out code
         uses: actions/checkout@v3 # https://github.com/actions/checkout
         with:
@@ -35,7 +51,8 @@ jobs:
 
       - name: Execute Gradle calculate tag version
         run: |
-          TAG_VERSION=$(./gradlew cV -Prelease.versionIncrementer=incrementMinor -q -Prelease.quiet)
+          ./gradlew release -Prelease.versionIncrementer=${{ env.tag_type_action }}
+          TAG_VERSION=$(./gradlew cV -q -Prelease.quiet)
           echo "::set-output name=TAG_VERSION::$TAG_VERSION"
         id: calculate_tag_version
 
