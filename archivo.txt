@@ -1,8 +1,3 @@
 Archivo inicial
 
-Se agrega una linea
-Se agrega 2 linea
-Se agrega 3 linea
-Se agrega linea
-Se agrega linea
-Se agrega linea
+linea 1
