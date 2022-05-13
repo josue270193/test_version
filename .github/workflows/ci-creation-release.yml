@@ -33,7 +33,7 @@ jobs:
       - name: Execute Gradle calculate tag version
         run: |
           TAG_VERSION=$(./gradlew cV -Prelease.versionIncrementer=incrementMinor -q -Prelease.quiet)
-          echo "::set-output name=TAG_VERSION::TAG_VERSION"
+          echo "::set-output name=TAG_VERSION::$TAG_VERSION"
         id: calculate_tag_version
 
       - name: Print calculate_tag_version
