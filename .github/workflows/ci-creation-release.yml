@@ -51,7 +51,7 @@ jobs:
 
       - name: Execute Gradle calculate tag version
         run: |
-          ./gradlew release -Prelease.versionIncrementer=${{ env.tag_type_action }}
+          ./gradlew release -Prelease.versionIncrementer=${{ env.tag_type_action }} -Prelease.localOnly
           TAG_VERSION=$(./gradlew cV -q -Prelease.quiet)
           echo "::set-output name=TAG_VERSION::$TAG_VERSION"
         id: calculate_tag_version
@@ -59,18 +59,17 @@ jobs:
       - name: Print calculate_tag_version
         run: |
           echo "calculate_tag_version: ${{ steps.calculate_tag_version.outputs.TAG_VERSION }}"
-  
 
-#      - name: Bump version and push tag
-#        id: tag_version
-#        uses: mathieudutour/github-tag-action@v6.0
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          custom_tag: ${{ github.event.inputs.tag }}
-#
-#      - name: Create a GitHub release
-#        uses: ncipollo/release-action@v1
-#        with:
-#          tag: ${{ steps.tag_version.outputs.new_tag }}
-#          name: Release ${{ steps.tag_version.outputs.new_tag }}
-#          body: ${{ steps.tag_version.outputs.changelog }}
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ github.event.inputs.tag }}
+
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
