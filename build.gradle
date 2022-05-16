@@ -1,8 +1,23 @@
 plugins {
+    id 'maven-publish'
     id 'pl.allegro.tech.build.axion-release' version '1.13.6'
 }
 
 group = 'com.test'
 version = scmVersion.version
 
-def isSnapshot = version.endsWith("-SNAPSHOT")
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+}
+
+//def isSnapshot = version.endsWith("-SNAPSHOT")
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
