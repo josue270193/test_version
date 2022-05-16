@@ -13,7 +13,7 @@ java {
     withSourcesJar()
 }
 
-//def isSnapshot = version.endsWith("-SNAPSHOT")
+def isSnapshot = version.endsWith("-SNAPSHOT")
 
 publishing {
     publications {
@@ -21,4 +21,20 @@ publishing {
             from(components.java)
         }
     }
+    repositories {
+        maven {
+            url = isSnapshot ? "$nexusSnapshotsRepoUrl" : "$nexusReleasesRepoUrl"
+            credentials {
+                username = "$nexusUserName"
+                password = "$nexusPassword"
+            }
+        }
+    }
 }
+
+task printVersion {
+    doLast {
+        println "Version: " + scmVersion.version
+    }
+}
+publishToMavenLocal.finalizedBy(printVersion)
