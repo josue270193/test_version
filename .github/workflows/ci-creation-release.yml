@@ -49,6 +49,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
       - name: Execute Gradle calculate tag version
         run: |
           ./gradlew release -Prelease.versionIncrementer=${{ env.tag_type_action }} -Prelease.localOnly
@@ -77,8 +83,8 @@ jobs:
       - name: Execute Gradle publish
         run: |
           ./gradlew publish
-          -PnexusUserName=${{ secrets.NEXUSUSERNAME }}
-          -PnexusPassword=${{ secrets.NEXUSPASSWORD }}
-          -PnexusMavenRepo=${{ secrets.NEXUSMAVENREPO }}
-          -PnexusReleasesRepoUrl=${{ secrets.NEXUSRELEASESREPOURL }}
-          -PnexusSnapshotsRepoUrl=${{ secrets.NEXUSSNAPSHOTSREPOURL }}
+          -PnexusUserName=${{ secrets.NEXUS_USERNAME }}
+          -PnexusPassword=${{ secrets.NEXUS_PASSWORD }}
+          -PnexusMavenRepo=${{ secrets.NEXUS_URL }}
+          -PnexusReleasesRepoUrl=${{ secrets.NEXUS_RELEASES_URL }}
+          -PnexusSnapshotsRepoUrl=${{ secrets.NEXUS_SNAPSHOT_URL }}
