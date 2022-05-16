@@ -82,9 +82,4 @@ jobs:
 
       - name: Execute Gradle publish
         run: |
-          ./gradlew publish
-          -PnexusUserName=${{ secrets.NEXUS_USERNAME }}
-          -PnexusPassword=${{ secrets.NEXUS_PASSWORD }}
-          -PnexusMavenRepo=${{ secrets.NEXUS_URL }}
-          -PnexusReleasesRepoUrl=${{ secrets.NEXUS_RELEASES_URL }}
-          -PnexusSnapshotsRepoUrl=${{ secrets.NEXUS_SNAPSHOT_URL }}
+          ./gradlew publish -PnexusUserName=${{ secrets.NEXUS_USERNAME }} -PnexusPassword=${{ secrets.NEXUS_PASSWORD }} -PnexusMavenRepo=${{ secrets.NEXUS_URL }} -PnexusReleasesRepoUrl=${{ secrets.NEXUS_RELEASES_URL }} -PnexusSnapshotsRepoUrl=${{ secrets.NEXUS_SNAPSHOT_URL }}
